@@ -428,31 +428,22 @@ pub struct PlayGame<'info> {
 
     // fronk vault that holds the dust mint for distribution
     #[account(
-        // init_if_needed,
-        // payer = user,
-        // associated_token::mint = fronk_mint,
-        // associated_token::authority = pool
-        mut
+        mut,
+        constraint = fronk_vault.mint == fronk_mint.key() && fronk_vault.owner == pool.key()
     )]
     pub fronk_vault: Box<Account<'info, TokenAccount>>,
 
     // fronk dev_wallet that holds the dust mint for distribution
     #[account(
-        // init_if_needed,
-        // payer = user,
-        // associated_token::mint = fronk_mint,
-        // associated_token::authority = dev_account
-        mut
+        mut,
+        constraint = fronk_vault.mint == fronk_mint.key() && fronk_vault.owner == dev_account.key()
     )]
     pub fronk_dev: Box<Account<'info, TokenAccount>>,
 
     // fronk burn_wallet that holds the dust mint for distribution
     #[account(
-        // init_if_needed,
-        // payer = user,
-        // associated_token::mint = fronk_mint,
-        // associated_token::authority = burn_account
-        mut
+        mut,
+        constraint = fronk_vault.mint == fronk_mint.key() && fronk_vault.owner == burn_account.key()
     )]
     pub fronk_burn: Box<Account<'info, TokenAccount>>,
 
@@ -473,7 +464,7 @@ pub struct PlayGame<'info> {
     #[account(mut, constraint = dev_account.key() == pool.dev_wallet)]
     pub dev_account: AccountInfo<'info>,
     /// CHECK: this should be checked with sol vault address
-    #[account(mut, constraint = burn_account.key() == pool.burn_wallet)]
+    #[account(constraint = burn_account.key() == pool.burn_wallet)]
     pub burn_account: AccountInfo<'info>,
 
     /// CHECK: This is not dangerous because we don't read or write from this account
